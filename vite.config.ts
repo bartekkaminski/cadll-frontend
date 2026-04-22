@@ -11,7 +11,7 @@ export default defineConfig({
     port: 5199,
     proxy: {
       '/api': {
-        target: 'http://localhost:5178',
+        target: 'https://squid-app-7qm6q.ondigitalocean.app',
         changeOrigin: true,
       },
     },

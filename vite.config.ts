@@ -16,9 +16,4 @@ export default defineConfig({
       },
     },
   },
-  build: {
-    // Buduje bezpośrednio do wwwroot backendu → serwowany jako pliki statyczne
-    outDir: '../backend/wwwroot',
-    emptyOutDir: true,
-  },
 })

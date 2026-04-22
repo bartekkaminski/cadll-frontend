@@ -1,95 +1,92 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-type AppStatus = 'idle' | 'generating' | 'compiling' | 'downloading' | 'done' | 'error'
+type AppStatus = "idle" | "generating" | "compiling" | "downloading" | "done" | "error";
 
 const STATUS_LABELS: Record<AppStatus, string> = {
-  idle:        'Gotowy',
-  generating:  'Generuję kod przez gpt-4.1...',
-  compiling:   'Kompiluję przez Roslyn...',
-  downloading: 'Pobieranie DLL...',
-  done:        'Gotowy',
-  error:       'Błąd',
-}
+  idle: "Gotowy",
+  generating: "Generowanie kodu...",
+  compiling: "Kompilowanie...",
+  downloading: "Pobieranie DLL...",
+  done: "Gotowy",
+  error: "Błąd",
+};
 
 function Spinner() {
   return (
     <span className="inline-block w-4 h-4 border-2 border-cad-muted border-t-white rounded-full animate-spin" />
-  )
+  );
 }
 
 export default function App() {
-  const [functionName, setFunctionName] = useState('')
-  const [prompt, setPrompt] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-  const [appStatus, setAppStatus] = useState<AppStatus>('idle')
+  const [functionName, setFunctionName] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [appStatus, setAppStatus] = useState<AppStatus>("idle");
 
   const validate = (): string | null => {
-    if (!functionName.trim())
-      return 'Podaj nazwę funkcji.'
+    if (!functionName.trim()) return "Podaj nazwę funkcji.";
     if (!/^[A-Za-z][A-Za-z0-9]*$/.test(functionName.trim()))
-      return 'Nazwa funkcji musi zaczynać się literą i zawierać tylko znaki alfanumeryczne (bez spacji).'
-    if (!prompt.trim())
-      return 'Podaj opis funkcji.'
-    return null
-  }
+      return "Nazwa funkcji musi zaczynać się literą i zawierać tylko znaki alfanumeryczne (bez spacji).";
+    if (!prompt.trim()) return "Podaj opis funkcji.";
+    return null;
+  };
 
   const handleGenerate = async () => {
-    const validationError = validate()
+    const validationError = validate();
     if (validationError) {
-      setError(validationError)
-      return
+      setError(validationError);
+      return;
     }
 
-    setIsLoading(true)
-    setError(null)
-    setSuccess(null)
-    setAppStatus('generating')
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
+    setAppStatus("generating");
 
     try {
-      const base = import.meta.env.VITE_API_URL ?? ''
+      const base = import.meta.env.VITE_API_URL ?? "";
       const res = await fetch(`${base}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ functionName: functionName.trim(), prompt: prompt.trim() }),
-      })
+      });
 
-      setAppStatus('compiling')
+      setAppStatus("compiling");
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
+        const data = await res.json().catch(() => ({}));
         const msg =
           data.error ??
-          (Array.isArray(data.errors) ? data.errors.join('\n') : null) ??
-          `HTTP ${res.status}: ${res.statusText}`
-        throw new Error(msg)
+          (Array.isArray(data.errors) ? data.errors.join("\n") : null) ??
+          `HTTP ${res.status}: ${res.statusText}`;
+        throw new Error(msg);
       }
 
-      setAppStatus('downloading')
-      const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${functionName.trim()}.dll`
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      URL.revokeObjectURL(url)
+      setAppStatus("downloading");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${functionName.trim()}.dll`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
 
-      setSuccess(`${functionName.trim()}.dll`)
-      setAppStatus('done')
+      setSuccess(`${functionName.trim()}.dll`);
+      setAppStatus("done");
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : String(e))
-      setAppStatus('error')
+      setError(e instanceof Error ? e.message : String(e));
+      setAppStatus("error");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-cad-base font-sans">
-
       {/* ── Titlebar ── */}
       <header className="flex items-center gap-3 px-5 py-3 bg-cad-surface border-b border-cad-border select-none">
         <div className="flex items-center gap-2">
@@ -97,33 +94,26 @@ export default function App() {
           <div className="w-3 h-3 bg-cad-accent-d opacity-60" />
           <div className="w-3 h-3 bg-cad-border" />
         </div>
-        <span className="font-mono text-sm font-bold text-cad-text tracking-widest uppercase">
-          CADLL
-        </span>
+        <span className="font-mono text-sm font-bold text-cad-text tracking-widest uppercase">CADLL</span>
         <span className="text-cad-muted text-xs font-mono">│</span>
-        <span className="text-cad-label text-xs font-mono tracking-wider uppercase">
-          ZWCAD Function Generator
-        </span>
+        <span className="text-cad-label text-xs font-mono tracking-wider uppercase">CAD Function Generator</span>
       </header>
 
       {/* ── Main content ── */}
       <main className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-xl">
-
           {/* Card */}
           <div className="bg-cad-panel border border-cad-border">
-
             {/* Card header */}
             <div className="px-5 py-3 border-b border-cad-border bg-cad-surface flex items-center gap-2">
               <span className="w-2 h-2 bg-cad-accent inline-block" />
               <span className="text-cad-label text-xs font-mono uppercase tracking-widest">
-                Generator funkcji ZWCAD
+                Generator funkcji CAD
               </span>
             </div>
 
             {/* Card body */}
             <div className="p-6 flex flex-col gap-5">
-
               {/* Function name */}
               <div className="flex flex-col gap-1.5">
                 <label
@@ -136,10 +126,10 @@ export default function App() {
                   id="functionName"
                   type="text"
                   value={functionName}
-                  onChange={e => {
-                    setFunctionName(e.target.value)
-                    setError(null)
-                    setSuccess(null)
+                  onChange={(e) => {
+                    setFunctionName(e.target.value);
+                    setError(null);
+                    setSuccess(null);
                   }}
                   placeholder="np. LiczKolory"
                   disabled={isLoading}
@@ -158,21 +148,18 @@ export default function App() {
 
               {/* Prompt */}
               <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="prompt"
-                  className="text-cad-label text-xs font-mono uppercase tracking-widest"
-                >
-                  Opis / Prompt
+                <label htmlFor="prompt" className="text-cad-label text-xs font-mono uppercase tracking-widest">
+                  Opis
                 </label>
                 <textarea
                   id="prompt"
                   value={prompt}
-                  onChange={e => {
-                    setPrompt(e.target.value)
-                    setError(null)
-                    setSuccess(null)
+                  onChange={(e) => {
+                    setPrompt(e.target.value);
+                    setError(null);
+                    setSuccess(null);
                   }}
-                  placeholder="Opisz co ma robić funkcja ZWCAD, np:&#10;Policz długości linii i polilinii według koloru i wypisz wyniki w oknie dialogowym..."
+                  placeholder="Opisz co ma robić funkcja CAD, np:&#10;Policz długości linii i polilinii według koloru i wypisz wyniki w oknie dialogowym..."
                   rows={6}
                   disabled={isLoading}
                   className="
@@ -222,9 +209,7 @@ export default function App() {
                 <div className="flex items-start gap-3 px-4 py-3 bg-cad-ok-bg border-l-2 border-cad-ok">
                   <span className="text-cad-ok text-sm mt-px">✔</span>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-cad-ok text-sm font-mono font-bold">
-                      Kompilacja zakończona
-                    </span>
+                    <span className="text-cad-ok text-sm font-mono font-bold">Kompilacja zakończona</span>
                     <span className="text-cad-ok text-xs font-mono opacity-80">
                       Plik <strong>{success}</strong> został pobrany
                     </span>
@@ -235,21 +220,18 @@ export default function App() {
               {/* Error message */}
               {error && (
                 <div className="flex flex-col gap-2 px-4 py-3 bg-cad-err-bg border-l-2 border-cad-err">
-                  <span className="text-cad-err text-xs font-mono font-bold uppercase tracking-wider">
-                    Błąd
-                  </span>
+                  <span className="text-cad-err text-xs font-mono font-bold uppercase tracking-wider">Błąd</span>
                   <pre className="text-cad-err text-xs font-mono whitespace-pre-wrap break-all leading-relaxed">
                     {error}
                   </pre>
                 </div>
               )}
-
             </div>
           </div>
 
           {/* Info note */}
           <p className="mt-4 text-center text-cad-muted text-xs font-mono">
-            Generuje wtyczkę ZWCAD (.dll) używając gpt-4.1 + Roslyn
+            Generuje wtyczkę CAD (.dll) z pomocą AI
           </p>
         </div>
       </main>
@@ -257,20 +239,19 @@ export default function App() {
       {/* ── Status bar ── */}
       <footer className="flex items-center justify-between px-5 py-1.5 bg-cad-surface border-t border-cad-border select-none">
         <div className="flex items-center gap-4">
-          <div className={`flex items-center gap-1.5 ${appStatus === 'error' ? 'text-cad-err' : appStatus === 'done' ? 'text-cad-ok' : isLoading ? 'text-cad-accent' : 'text-cad-muted'}`}>
+          <div
+            className={`flex items-center gap-1.5 ${appStatus === "error" ? "text-cad-err" : appStatus === "done" ? "text-cad-ok" : isLoading ? "text-cad-accent" : "text-cad-muted"}`}
+          >
             {isLoading && <Spinner />}
-            <span className="text-xs font-mono">
-              {STATUS_LABELS[appStatus]}
-            </span>
+            <span className="text-xs font-mono">{STATUS_LABELS[appStatus]}</span>
           </div>
         </div>
         <div className="flex items-center gap-4 text-cad-muted text-xs font-mono">
-          <span>ZWCAD Plugin Generator</span>
+          <span>CAD Plugin Generator</span>
           <span className="text-cad-border">│</span>
           <span>v1.0</span>
         </div>
       </footer>
-
     </div>
-  )
+  );
 }

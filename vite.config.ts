@@ -9,11 +9,5 @@ export default defineConfig({
   ],
   server: {
     port: 5199,
-    proxy: {
-      '/api': {
-        target: 'https://squid-app-7qm6q.ondigitalocean.app',
-        changeOrigin: true,
-      },
-    },
   },
 })

@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  /* ---- Tło / powierzchnie (wzorowane na ciemnym UI ZWCAD) ---- */
+  --color-cad-base:     #0a0c0f;
+  --color-cad-surface:  #12151a;
+  --color-cad-panel:    #1a1e26;
+  --color-cad-border:   #252a35;
+  --color-cad-border-h: #353d50;
+
+  /* ---- Tekst ---- */
+  --color-cad-text:     #c5cdd8;
+  --color-cad-muted:    #4e5768;
+  --color-cad-label:    #7a8699;
+
+  /* ---- Akcenty — niebieski CAD ---- */
+  --color-cad-accent:   #2d8fc4;
+  --color-cad-accent-h: #3aa8e0;
+  --color-cad-accent-d: #1a6a97;
+
+  /* ---- Stany ---- */
+  --color-cad-ok:       #3aaa6a;
+  --color-cad-ok-bg:    #1a3328;
+  --color-cad-err:      #c94545;
+  --color-cad-err-bg:   #2e1515;
+
+  /* ---- Typografia ---- */
+  --font-mono: 'Consolas', 'Courier New', ui-monospace, monospace;
+  --font-sans: 'Segoe UI', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-cad-base);
+  color: var(--color-cad-text);
+}
+
+/* Subtelna siatka jako tło — klimat CAD */
+body {
+  background-image:
+    linear-gradient(rgba(37, 42, 53, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 42, 53, 0.4) 1px, transparent 1px);
+  background-size: 24px 24px;
+}

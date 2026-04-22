@@ -48,7 +48,8 @@ export default function App() {
     setAppStatus('generating')
 
     try {
-      const res = await fetch('/api/generate', {
+      const base = import.meta.env.VITE_API_URL ?? ''
+      const res = await fetch(`${base}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ functionName: functionName.trim(), prompt: prompt.trim() }),

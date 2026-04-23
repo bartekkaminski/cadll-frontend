@@ -130,6 +130,11 @@ export default function App() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
+        if (res.status === 429) {
+          throw new Error(
+            data.error ?? "Przekroczono dzienny limit generowań. Wróć jutro lub skontaktuj się z nami na kontakt@cadll.pl, jeśli potrzebujesz większego dostępu."
+          );
+        }
         throw new Error(
           data.error ??
             (Array.isArray(data.errors) ? data.errors.join("\n") : null) ??

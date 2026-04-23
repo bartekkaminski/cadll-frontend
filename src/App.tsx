@@ -182,8 +182,8 @@ export default function App() {
     <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden">
       {/* ── Hero ── */}
       <section className="pt-4 md:pt-12 pb-5 md:pb-8 px-3 flex flex-col items-center text-center select-none">
-        <div className="flex items-center gap-3 mb-5 md:mb-10" style={{ fontSize: "2.5rem" }}>
-          <div className="w-6 bg-cad-accent" style={{ height: "1cap" }} />
+        <div className="flex items-center gap-3 mb-5 md:mb-10" style={{ fontSize: "clamp(1.5rem, 5vw, 2.5rem)" }}>
+          <div className="bg-cad-accent" style={{ width: "0.35em", height: "1cap" }} />
           <span
             className="font-mono font-bold tracking-widest uppercase"
             style={{ fontSize: "1em", lineHeight: 1 }}

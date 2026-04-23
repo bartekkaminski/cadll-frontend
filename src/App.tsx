@@ -218,7 +218,7 @@ export default function App() {
             </span>
           </div>
           <h1 className="text-4xl md:text-5xl font-mono font-bold tracking-wider uppercase mb-3">
-            <span className="text-cad-text">Generator wtyczek </span>
+            <span className="text-cad-text">Własne komendy </span>
             <span className="text-cad-accent">CAD</span>
           </h1>
           <h2 className="text-cad-label font-mono text-base md:text-lg max-w-lg leading-relaxed font-normal">

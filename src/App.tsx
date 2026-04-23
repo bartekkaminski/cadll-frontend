@@ -31,7 +31,7 @@ const PLATFORMS: { id: CadPlatform; label: string; soon?: boolean }[] = [
 ];
 
 const OUTPUT_FORMATS: { id: OutputFormat; label: string; soon?: boolean }[] = [
-  { id: "auto", label: "Automatycznie", soon: true },
+  { id: "auto", label: "Auto", soon: true },
   { id: "dll", label: "DLL" },
   { id: "lisp", label: "LISP", soon: true },
 ];
@@ -132,7 +132,8 @@ export default function App() {
         const data = await res.json().catch(() => ({}));
         if (res.status === 429) {
           throw new Error(
-            data.error ?? "Przekroczono dzienny limit generowań. Wróć jutro lub skontaktuj się z nami na kontakt@cadll.pl, jeśli potrzebujesz większego dostępu."
+            data.error ??
+              "Przekroczono dzienny limit generowań. Wróć jutro lub skontaktuj się z nami na kontakt@cadll.pl, jeśli potrzebujesz większego dostępu.",
           );
         }
         throw new Error(
@@ -203,9 +204,9 @@ export default function App() {
       </div>
       <div className="relative flex flex-col min-h-screen" style={{ zIndex: 1 }}>
         {/* ── Hero ── */}
-        <section className="pt-4 md:pt-12 pb-5 md:pb-8 px-3 flex flex-col items-center text-center select-none">
+        <section className="pt-6 md:pt-16 pb-14 px-3 flex flex-col items-center text-center select-none">
           <div
-            className="flex items-center gap-3 mb-5 md:mb-10"
+            className="flex items-center gap-3 mb-10"
             style={{ fontSize: "clamp(1.5rem, 5vw, 2.5rem)" }}
           >
             <div className="bg-cad-accent" style={{ width: "0.35em", height: "1cap" }} />
@@ -217,88 +218,82 @@ export default function App() {
               <span className="text-cad-text">LL</span>
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-mono font-bold tracking-wider uppercase mb-3">
-            <span className="text-cad-text">Własne komendy </span>
-            <span className="text-cad-accent">CAD</span>
+          <h1 className="text-4xl md:text-5xl font-mono font-bold tracking-wider uppercase mb-6 max-w-md">
+            <span className="block text-cad-text">Opisz potrzebę.</span>
+            <span className="block text-cad-accent">My wygenerujemy wtyczkę.</span>
           </h1>
-          <h2 className="text-cad-label font-mono text-base md:text-lg max-w-lg leading-relaxed font-normal">
-            Opisz funkcję, wybierz platformę i{" "}
-            <span className="font-bold">
-              <span className="text-cad-accent">CAD</span>
-              <span className="text-cad-text">LL</span>
-            </span>{" "}
-            z pomocą <span className="text-cad-text font-bold">AI</span> wygeneruje gotową wtyczkę{" "}
+          <h2 className="text-cad-label font-mono text-base md:text-lg max-w-xs leading-relaxed font-normal">
+            Twoja komenda CAD jako{" "}
             <span className="bg-cad-text text-cad-base font-bold px-1">.dll</span> lub{" "}
-            <span className="bg-cad-text text-cad-base font-bold px-1">.lsp</span>.
+            <span className="bg-cad-text text-cad-base font-bold px-1">.lsp</span>{" "}
+            w kilka sekund.
           </h2>
+
         </section>
 
         {/* ── Selectors ── */}
-        <section className="flex flex-col items-center gap-4 px-3 mb-10 select-none">
+        <section className="flex flex-col items-center gap-8 px-3 mb-14 select-none">
           {/* Platform */}
-          <div className="flex flex-wrap gap-1 p-1 border border-cad-border bg-cad-surface w-full max-w-2xl">
+          <div className="w-full max-w-2xl flex flex-col gap-2">
+            <p className="font-mono text-xs text-cad-muted uppercase tracking-widest">Wybierz program CAD</p>
+          <div className="grid grid-cols-1 min-[300px]:grid-cols-2 min-[480px]:grid-cols-4 gap-2">
             {PLATFORMS.map((p) => (
               <button
                 key={p.id}
                 disabled={p.soon || busy}
                 onClick={() => !p.soon && setPlatform(p.id)}
                 className={[
-                  "flex-1 basis-28 py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center",
+                  "py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center border",
                   p.soon
-                    ? "text-cad-label cursor-not-allowed opacity-60"
+                    ? "border-cad-border text-cad-label cursor-not-allowed opacity-60 bg-cad-surface"
                     : platform === p.id
-                      ? "bg-cad-accent text-white"
-                      : "text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
+                      ? "border-cad-accent bg-cad-accent text-white"
+                      : "border-cad-border bg-cad-surface text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
                 ].join(" ")}
               >
                 <span>{p.label}</span>
-                {p.soon && (
-                  <span className="block text-[9px] font-mono text-cad-muted normal-case tracking-normal leading-tight">
-                    wkrótce
-                  </span>
-                )}
               </button>
             ))}
           </div>
+          </div>
 
           {/* Output format */}
-          <div className="flex flex-wrap gap-1 p-1 border border-cad-border bg-cad-surface w-full max-w-2xl">
+          <div className="w-full max-w-2xl flex flex-col gap-2">
+            <p className="font-mono text-xs text-cad-muted uppercase tracking-widest">Format wyjścia</p>
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-2">
             {OUTPUT_FORMATS.map((f) => (
               <button
                 key={f.id}
                 disabled={f.soon || busy}
                 onClick={() => !f.soon && setOutputFormat(f.id)}
                 className={[
-                  "flex-1 basis-28 py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center",
+                  "py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center border",
                   f.soon
-                    ? "text-cad-label cursor-not-allowed opacity-60"
+                    ? "border-cad-border text-cad-label cursor-not-allowed opacity-60 bg-cad-surface"
                     : outputFormat === f.id
-                      ? "bg-cad-accent text-white"
-                      : "text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
+                      ? "border-cad-accent bg-cad-accent text-white"
+                      : "border-cad-border bg-cad-surface text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
                 ].join(" ")}
               >
                 <span>{f.label}</span>
-                {f.soon && (
-                  <span className="block text-[9px] font-mono text-cad-muted normal-case tracking-normal leading-tight">
-                    wkrótce
-                  </span>
-                )}
               </button>
             ))}
+          </div>
           </div>
         </section>
 
         {/* ── Form ── */}
         <main className="flex-1 flex justify-center px-3 pb-4">
-          <div className="w-full max-w-2xl flex flex-col gap-8">
+          <div className="w-full max-w-2xl flex flex-col gap-10">
             {/* Function name */}
-            <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
+            <div className="flex flex-col gap-2">
               <label
                 htmlFor="functionName"
-                className="px-4 pt-3 text-cad-muted font-mono text-xs uppercase tracking-widest"
+                className="font-mono text-xs text-cad-muted uppercase tracking-widest"
               >
                 Nazwa komendy
               </label>
+            <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
               <input
                 id="functionName"
                 type="text"
@@ -330,15 +325,17 @@ export default function App() {
                 </div>
               )}
             </div>
+            </div>
 
             {/* Prompt */}
-            <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
+            <div className="flex flex-col gap-2">
               <label
                 htmlFor="prompt"
-                className="px-4 pt-3 text-cad-muted font-mono text-xs uppercase tracking-widest"
+                className="font-mono text-xs text-cad-muted uppercase tracking-widest"
               >
                 Opis
               </label>
+            <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
               <textarea
                 id="prompt"
                 value={prompt}
@@ -372,6 +369,7 @@ export default function App() {
                   {prompt.length} / 2000
                 </span>
               </div>
+            </div>
             </div>
 
             {/* Generate button */}
@@ -423,7 +421,7 @@ export default function App() {
             )}
 
             {/* Examples */}
-            <div className="flex flex-col gap-3 pt-4 border-t border-cad-border">
+            <div className="hidden sm:flex flex-col gap-3 pt-4 border-t border-cad-border">
               <p className="text-cad-muted font-mono text-xs uppercase tracking-widest">Przykłady</p>
               <div className="flex flex-col gap-2">
                 {EXAMPLES.map((ex) => (
@@ -457,10 +455,10 @@ export default function App() {
 
             {/* Contact / support */}
             <div className="flex flex-col items-center text-center gap-5 pt-8 pb-4 border-t border-cad-border">
-              <p className="text-cad-text font-mono text-base md:text-lg font-bold tracking-wide">
+              <p className="text-cad-text font-mono text-xl md:text-3xl font-bold tracking-wide">
                 Masz pytania lub potrzebujesz czegoś bardziej zaawansowanego?
               </p>
-              <p className="text-cad-label font-mono text-sm max-w-lg leading-relaxed">
+              <p className="text-cad-label font-mono text-base md:text-lg max-w-lg leading-snug">
                 Zapraszamy do kontaktu - pomożemy wdrożyć dedykowane rozwiązania CAD dopasowane do Twoich potrzeb.
               </p>
               <a
@@ -488,10 +486,10 @@ export default function App() {
                   "Pracownia architektoniczna",
                   "Geodezja i kartografia",
                   "Przemysł i produkcja",
-                "Instalacje i MEP",
-                "Infrastruktura drogowa",
-                "Inżynier budowy",
-                "Kierownik budowy",
+                  "Instalacje i MEP",
+                  "Infrastruktura drogowa",
+                  "Inżynier budowy",
+                  "Kierownik budowy",
                 ].map((tag) => (
                   <span
                     key={tag}

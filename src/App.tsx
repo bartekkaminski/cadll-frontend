@@ -4,7 +4,7 @@ type AppStatus = "idle" | "generating" | "compiling" | "fixing" | "downloading" 
 
 const STATUS_LABELS: Record<AppStatus, string> = {
   idle: "Gotowy",
-  generating: "Generowanie kodu...",
+  generating: "Generowanie wtyczki CAD...",
   compiling: "Kompilowanie...",
   fixing: "Poprawianie błędów...",
   downloading: "Pobieranie ZIP...",
@@ -83,8 +83,8 @@ export default function App() {
 
   const validate = (): string | null => {
     if (!functionName.trim()) return "Podaj nazwę funkcji.";
-    if (!/^[A-Za-z][A-Za-z0-9]*$/.test(functionName.trim()))
-      return "Nazwa funkcji musi zaczynać się literą i zawierać tylko znaki alfanumeryczne (bez spacji).";
+    if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(functionName.trim()))
+      return "Nazwa komendy musi zaczynać się literą i zawierać tylko litery, cyfry lub znak podkreślenia _.";
     if (!prompt.trim()) return "Podaj opis funkcji.";
     return null;
   };

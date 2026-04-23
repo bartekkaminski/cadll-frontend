@@ -47,7 +47,7 @@ const EXAMPLES: { label: string; name: string; prompt: string }[] = [
     label: "Zlicz wstawienia bloków",
     name: "CADLL_LICZNABLOKI",
     prompt:
-      "Przejdź przez wszystkie obiekty na rysunku i znajdź wstawienia bloków (Insert). Pogrupuj je według nazwy bloku i policz ile razy każdy blok został wstawiony. Wyświetl wyniki w oknie komunikatu — każda linia: nazwa bloku i liczba wstawień, posortowane malejąco po liczbie.",
+      "Przejdź przez wszystkie obiekty na rysunku i znajdź wstawienia bloków (Insert). Pogrupuj je według nazwy bloku i policz ile razy każdy blok został wstawiony. Wyświetl wyniki w oknie komunikatu - każda linia: nazwa bloku i liczba wstawień, posortowane malejąco po liczbie.",
   },
   {
     label: "Zaznacz obiekty warstwy",
@@ -180,109 +180,137 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden">
-      {/* ── Hero ── */}
-      <section className="pt-4 md:pt-12 pb-5 md:pb-8 px-3 flex flex-col items-center text-center select-none">
-        <div className="flex items-center gap-3 mb-5 md:mb-10" style={{ fontSize: "clamp(1.5rem, 5vw, 2.5rem)" }}>
-          <div className="bg-cad-accent" style={{ width: "0.35em", height: "1cap" }} />
-          <span
-            className="font-mono font-bold tracking-widest uppercase"
-            style={{ fontSize: "1em", lineHeight: 1 }}
+      {/* Siatka CAD — fixed, nie rusza się przy scrollowaniu */}
+      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage: `
+            linear-gradient(rgba(45,143,196,0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(45,143,196,0.07) 1px, transparent 1px),
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
+          `,
+            backgroundSize: "100px 100px, 100px 100px, 20px 20px, 20px 20px",
+            backgroundPosition: "center center",
+          }}
+        />
+      </div>
+      <div className="relative flex flex-col min-h-screen" style={{ zIndex: 1 }}>
+        {/* ── Hero ── */}
+        <section className="pt-4 md:pt-12 pb-5 md:pb-8 px-3 flex flex-col items-center text-center select-none">
+          <div
+            className="flex items-center gap-3 mb-5 md:mb-10"
+            style={{ fontSize: "clamp(1.5rem, 5vw, 2.5rem)" }}
           >
+            <div className="bg-cad-accent" style={{ width: "0.35em", height: "1cap" }} />
+            <span
+              className="font-mono font-bold tracking-widest uppercase"
+              style={{ fontSize: "1em", lineHeight: 1 }}
+            >
+              <span className="text-cad-accent">CAD</span>
+              <span className="text-cad-text">LL</span>
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-mono font-bold tracking-wider uppercase mb-3">
+            <span className="text-cad-text">Generator wtyczek </span>
             <span className="text-cad-accent">CAD</span>
-            <span className="text-cad-text">LL</span>
-          </span>
-        </div>
-        <h1 className="text-4xl md:text-5xl font-mono font-bold tracking-wider uppercase mb-3">
-          <span className="text-cad-text">Generator wtyczek </span><span className="text-cad-accent">CAD</span>
-        </h1>
-        <h2 className="text-cad-label font-mono text-base md:text-lg max-w-lg leading-relaxed font-normal">
-          Opisz funkcję, wybierz platformę i <span className="font-bold"><span className="text-cad-accent">CAD</span><span className="text-cad-text">LL</span></span> z pomocą <span className="text-cad-text font-bold">AI</span> wygeneruje gotową wtyczkę <span className="bg-cad-text text-cad-base font-bold px-1">.dll</span> lub <span className="bg-cad-text text-cad-base font-bold px-1">.lsp</span>.
-        </h2>
-      </section>
+          </h1>
+          <h2 className="text-cad-label font-mono text-base md:text-lg max-w-lg leading-relaxed font-normal">
+            Opisz funkcję, wybierz platformę i{" "}
+            <span className="font-bold">
+              <span className="text-cad-accent">CAD</span>
+              <span className="text-cad-text">LL</span>
+            </span>{" "}
+            z pomocą <span className="text-cad-text font-bold">AI</span> wygeneruje gotową wtyczkę{" "}
+            <span className="bg-cad-text text-cad-base font-bold px-1">.dll</span> lub{" "}
+            <span className="bg-cad-text text-cad-base font-bold px-1">.lsp</span>.
+          </h2>
+        </section>
 
-      {/* ── Selectors ── */}
-      <section className="flex flex-col items-center gap-4 px-3 mb-10 select-none">
-        {/* Platform */}
-        <div className="flex flex-wrap gap-1 p-1 border border-cad-border bg-cad-surface w-full max-w-2xl">
-          {PLATFORMS.map((p) => (
-            <button
-              key={p.id}
-              disabled={p.soon || busy}
-              onClick={() => !p.soon && setPlatform(p.id)}
-              className={[
-                "flex-1 basis-28 py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center",
-                p.soon
-                  ? "text-cad-label cursor-not-allowed opacity-60"
-                  : platform === p.id
-                    ? "bg-cad-accent text-white"
-                    : "text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
-              ].join(" ")}
-            >
-              <span>{p.label}</span>
-              {p.soon && (
-                <span className="block text-[9px] font-mono text-cad-muted normal-case tracking-normal leading-tight">
-                  wkrótce
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+        {/* ── Selectors ── */}
+        <section className="flex flex-col items-center gap-4 px-3 mb-10 select-none">
+          {/* Platform */}
+          <div className="flex flex-wrap gap-1 p-1 border border-cad-border bg-cad-surface w-full max-w-2xl">
+            {PLATFORMS.map((p) => (
+              <button
+                key={p.id}
+                disabled={p.soon || busy}
+                onClick={() => !p.soon && setPlatform(p.id)}
+                className={[
+                  "flex-1 basis-28 py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center",
+                  p.soon
+                    ? "text-cad-label cursor-not-allowed opacity-60"
+                    : platform === p.id
+                      ? "bg-cad-accent text-white"
+                      : "text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
+                ].join(" ")}
+              >
+                <span>{p.label}</span>
+                {p.soon && (
+                  <span className="block text-[9px] font-mono text-cad-muted normal-case tracking-normal leading-tight">
+                    wkrótce
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
 
-        {/* Output format */}
-        <div className="flex flex-wrap gap-1 p-1 border border-cad-border bg-cad-surface w-full max-w-2xl">
-          {OUTPUT_FORMATS.map((f) => (
-            <button
-              key={f.id}
-              disabled={f.soon || busy}
-              onClick={() => !f.soon && setOutputFormat(f.id)}
-              className={[
-                "flex-1 basis-28 py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center",
-                f.soon
-                  ? "text-cad-label cursor-not-allowed opacity-60"
-                  : outputFormat === f.id
-                    ? "bg-cad-accent text-white"
-                    : "text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
-              ].join(" ")}
-            >
-              <span>{f.label}</span>
-              {f.soon && (
-                <span className="block text-[9px] font-mono text-cad-muted normal-case tracking-normal leading-tight">
-                  wkrótce
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-      </section>
+          {/* Output format */}
+          <div className="flex flex-wrap gap-1 p-1 border border-cad-border bg-cad-surface w-full max-w-2xl">
+            {OUTPUT_FORMATS.map((f) => (
+              <button
+                key={f.id}
+                disabled={f.soon || busy}
+                onClick={() => !f.soon && setOutputFormat(f.id)}
+                className={[
+                  "flex-1 basis-28 py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center",
+                  f.soon
+                    ? "text-cad-label cursor-not-allowed opacity-60"
+                    : outputFormat === f.id
+                      ? "bg-cad-accent text-white"
+                      : "text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
+                ].join(" ")}
+              >
+                <span>{f.label}</span>
+                {f.soon && (
+                  <span className="block text-[9px] font-mono text-cad-muted normal-case tracking-normal leading-tight">
+                    wkrótce
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </section>
 
-      {/* ── Form ── */}
-      <main className="flex-1 flex justify-center px-3 pb-12">
-        <div className="w-full max-w-2xl flex flex-col gap-8">
-          {/* Function name */}
-          <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
-            <label
-              htmlFor="functionName"
-              className="px-4 pt-3 text-cad-muted font-mono text-xs uppercase tracking-widest"
-            >
-              Nazwa komendy
-            </label>
-            <input
-              id="functionName"
-              type="text"
-              value={functionName}
-              onChange={(e) => {
-                const val = e.target.value
-                  .replace(/[^A-Za-z0-9_]/g, "")
-                  .toUpperCase()
-                  .slice(0, 30);
-                setFunctionName(val);
-                setError(null);
-                setSuccess(null);
-              }}
-              placeholder="np. LiczKolory"
-              disabled={busy}
-              spellCheck={false}
-              className="
+        {/* ── Form ── */}
+        <main className="flex-1 flex justify-center px-3 pb-4">
+          <div className="w-full max-w-2xl flex flex-col gap-8">
+            {/* Function name */}
+            <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
+              <label
+                htmlFor="functionName"
+                className="px-4 pt-3 text-cad-muted font-mono text-xs uppercase tracking-widest"
+              >
+                Nazwa komendy
+              </label>
+              <input
+                id="functionName"
+                type="text"
+                value={functionName}
+                onChange={(e) => {
+                  const val = e.target.value
+                    .replace(/[^A-Za-z0-9_]/g, "")
+                    .toUpperCase()
+                    .slice(0, 30);
+                  setFunctionName(val);
+                  setError(null);
+                  setSuccess(null);
+                }}
+                placeholder="np. LiczKolory"
+                disabled={busy}
+                spellCheck={false}
+                className="
                 w-full px-4 py-3
                 bg-transparent
                 text-cad-text font-mono text-base
@@ -290,41 +318,41 @@ export default function App() {
                 focus:outline-none
                 disabled:opacity-40
               "
-            />
-            {functionName.length >= 30 && (
-              <div className="flex justify-end px-4 pb-2">
-                <span className="font-mono text-xs text-cad-err">Maksymalna długość: 30 znaków</span>
-              </div>
-            )}
-          </div>
+              />
+              {functionName.length >= 30 && (
+                <div className="flex justify-end px-4 pb-2">
+                  <span className="font-mono text-xs text-cad-err">Maksymalna długość: 30 znaków</span>
+                </div>
+              )}
+            </div>
 
-          {/* Prompt */}
-          <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
-            <label
-              htmlFor="prompt"
-              className="px-4 pt-3 text-cad-muted font-mono text-xs uppercase tracking-widest"
-            >
-              Opis
-            </label>
-            <textarea
-              id="prompt"
-              value={prompt}
-              onChange={(e) => {
-                setPrompt(e.target.value.slice(0, 2000));
-                setError(null);
-                setSuccess(null);
-                e.target.style.height = "auto";
-                e.target.style.height = e.target.scrollHeight + "px";
-              }}
-              placeholder={
-                "Opisz co ma robić funkcja CAD, np:\nPolicz długości linii i polilinii według koloru i wypisz wyniki..."
-              }
-              rows={5}
-              maxLength={2000}
-              disabled={busy}
-              spellCheck={false}
-              style={{ overflow: "hidden" }}
-              className="
+            {/* Prompt */}
+            <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
+              <label
+                htmlFor="prompt"
+                className="px-4 pt-3 text-cad-muted font-mono text-xs uppercase tracking-widest"
+              >
+                Opis
+              </label>
+              <textarea
+                id="prompt"
+                value={prompt}
+                onChange={(e) => {
+                  setPrompt(e.target.value.slice(0, 2000));
+                  setError(null);
+                  setSuccess(null);
+                  e.target.style.height = "auto";
+                  e.target.style.height = e.target.scrollHeight + "px";
+                }}
+                placeholder={
+                  "Opisz co ma robić funkcja CAD, np:\nPolicz długości linii i polilinii według koloru i wypisz wyniki..."
+                }
+                rows={5}
+                maxLength={2000}
+                disabled={busy}
+                spellCheck={false}
+                style={{ overflow: "hidden" }}
+                className="
                 w-full px-4 py-3
                 bg-transparent
                 text-cad-text font-mono text-sm leading-relaxed
@@ -333,20 +361,20 @@ export default function App() {
                 disabled:opacity-40
                 resize-none min-h-[120px]
               "
-            />
-            <div className="flex justify-end px-4 pb-2">
-              <span className={`font-mono text-xs ${prompt.length >= 1900 ? "text-cad-err" : "text-cad-muted"}`}>
-                {prompt.length} / 2000
-              </span>
+              />
+              <div className="flex justify-end px-4 pb-2">
+                <span className={`font-mono text-xs ${prompt.length >= 1900 ? "text-cad-err" : "text-cad-muted"}`}>
+                  {prompt.length} / 2000
+                </span>
+              </div>
             </div>
-          </div>
 
-          {/* Generate button */}
-          <div className="flex items-center gap-6 pt-2">
-            <button
-              onClick={handleGenerate}
-              disabled={busy}
-              className="
+            {/* Generate button */}
+            <div className="flex items-center gap-6 pt-2">
+              <button
+                onClick={handleGenerate}
+                disabled={busy}
+                className="
                 w-full py-3.5
                 bg-cad-accent hover:bg-cad-accent-h active:bg-cad-accent-d
                 disabled:opacity-40 disabled:cursor-not-allowed
@@ -355,55 +383,55 @@ export default function App() {
                 transition-colors duration-150
                 cursor-pointer
               "
-            >
-              {busy ? (
-                <>
-                  <Spinner />
-                  <span>{STATUS_LABELS[appStatus]}</span>
-                </>
-              ) : (
-                <>
-                  <span className="text-base leading-none">⚙</span>
-                  <span>Wygeneruj wtyczkę</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {success && !busy && (
-            <div className="flex items-center gap-2 text-cad-ok font-mono text-sm">
-              <span>✔</span>
-              <span>
-                <strong>{success}</strong> pobrany
-              </span>
+              >
+                {busy ? (
+                  <>
+                    <Spinner />
+                    <span>{STATUS_LABELS[appStatus]}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-base leading-none">⚙</span>
+                    <span>Wygeneruj wtyczkę</span>
+                  </>
+                )}
+              </button>
             </div>
-          )}
 
-          {/* Error */}
-          {error && (
-            <div className="border-l-2 border-cad-err pl-4 py-1">
-              <p className="text-cad-err font-mono text-xs uppercase tracking-wider mb-1">Błąd</p>
-              <pre className="text-cad-err font-mono text-xs whitespace-pre-wrap break-all leading-relaxed opacity-90">
-                {error}
-              </pre>
-            </div>
-          )}
+            {success && !busy && (
+              <div className="flex items-center gap-2 text-cad-ok font-mono text-sm">
+                <span>✔</span>
+                <span>
+                  <strong>{success}</strong> pobrany
+                </span>
+              </div>
+            )}
 
-          {/* Examples */}
-          <div className="flex flex-col gap-3 pt-4 border-t border-cad-border">
-            <p className="text-cad-muted font-mono text-xs uppercase tracking-widest">Przykłady</p>
-            <div className="flex flex-col gap-2">
-              {EXAMPLES.map((ex) => (
-                <button
-                  key={ex.name}
-                  disabled={busy}
-                  onClick={() => {
-                    setFunctionName(ex.name);
-                    setPrompt(ex.prompt);
-                    setError(null);
-                    setSuccess(null);
-                  }}
-                  className="
+            {/* Error */}
+            {error && (
+              <div className="border-l-2 border-cad-err pl-4 py-1">
+                <p className="text-cad-err font-mono text-xs uppercase tracking-wider mb-1">Błąd</p>
+                <pre className="text-cad-err font-mono text-xs whitespace-pre-wrap break-all leading-relaxed opacity-90">
+                  {error}
+                </pre>
+              </div>
+            )}
+
+            {/* Examples */}
+            <div className="flex flex-col gap-3 pt-4 border-t border-cad-border">
+              <p className="text-cad-muted font-mono text-xs uppercase tracking-widest">Przykłady</p>
+              <div className="flex flex-col gap-2">
+                {EXAMPLES.map((ex) => (
+                  <button
+                    key={ex.name}
+                    disabled={busy}
+                    onClick={() => {
+                      setFunctionName(ex.name);
+                      setPrompt(ex.prompt);
+                      setError(null);
+                      setSuccess(null);
+                    }}
+                    className="
                     w-full text-left px-4 py-3
                     border border-cad-border bg-cad-surface
                     hover:border-cad-accent hover:bg-cad-panel
@@ -411,23 +439,73 @@ export default function App() {
                     transition-colors duration-150 cursor-pointer
                     flex flex-col gap-2
                   "
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-cad-text font-mono text-sm font-bold">{ex.label}</span>
-                    <span className="text-cad-accent font-mono text-xs shrink-0">{ex.name}</span>
-                  </div>
-                  <p className="text-cad-label font-mono text-xs leading-relaxed line-clamp-2">{ex.prompt}</p>
-                </button>
-              ))}
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-cad-text font-mono text-sm font-bold">{ex.label}</span>
+                      <span className="text-cad-accent font-mono text-xs shrink-0">{ex.name}</span>
+                    </div>
+                    <p className="text-cad-label font-mono text-xs leading-relaxed line-clamp-2">{ex.prompt}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Contact / support */}
+            <div className="flex flex-col items-center text-center gap-5 pt-8 pb-4 border-t border-cad-border">
+              <p className="text-cad-text font-mono text-base md:text-lg font-bold tracking-wide">
+                Masz pytania lub potrzebujesz czegoś bardziej zaawansowanego?
+              </p>
+              <p className="text-cad-label font-mono text-sm max-w-lg leading-relaxed">
+                Zapraszamy do kontaktu - pomożemy wdrożyć dedykowane rozwiązania CAD dopasowane do Twoich potrzeb.
+              </p>
+              <a
+                href="mailto:kontakt@cadll.pl"
+                className="
+                px-8 py-3 border border-cad-accent text-cad-accent font-mono font-bold text-sm uppercase tracking-widest
+                hover:bg-cad-accent hover:text-white transition-colors duration-150
+              "
+              >
+                kontakt@cadll.pl
+              </a>
+              <a
+                href="https://imposoft.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cad-muted font-mono text-xs hover:text-cad-label transition-colors duration-150"
+              >
+                Wspierane przez <span className="font-bold text-cad-label">IMPOSOFT</span>
+              </a>
+
+              <div className="flex flex-wrap justify-center gap-2 pt-2">
+                {[
+                  "Biuro projektowe",
+                  "Biuro konstrukcyjne",
+                  "Pracownia architektoniczna",
+                  "Geodezja i kartografia",
+                  "Przemysł i produkcja",
+                "Instalacje i MEP",
+                "Infrastruktura drogowa",
+                "Inżynier budowy",
+                "Kierownik budowy",
+                ].map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1 border border-cad-border text-cad-muted font-mono text-xs tracking-wide hover:bg-cad-text hover:text-cad-base hover:border-cad-text transition-colors duration-150 cursor-default"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
 
-      {/* ── Version watermark ── */}
-      <div className="absolute bottom-4 left-0 right-0 text-center pointer-events-none select-none">
-        <span className="text-cad-muted font-mono text-xs opacity-30">v1.12</span>
+        {/* ── Version watermark ── */}
+        <div className="py-4 text-center pointer-events-none select-none">
+          <span className="text-cad-muted font-mono text-xs opacity-20">v1.12</span>
+        </div>
       </div>
+      {/* end inner wrapper */}
     </div>
   );
 }

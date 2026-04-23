@@ -25,9 +25,9 @@ type OutputFormat = "dll" | "auto" | "lisp";
 
 const PLATFORMS: { id: CadPlatform; label: string; soon?: boolean }[] = [
   { id: "zwcad", label: "ZWCAD" },
-  { id: "autocad", label: "AutoCAD", soon: true },
-  { id: "bricscad", label: "BricsCAD", soon: true },
-  { id: "gstarcad", label: "GStarCAD", soon: true },
+  { id: "autocad", label: "AutoCAD" },
+  { id: "bricscad", label: "BricsCAD" },
+  { id: "gstarcad", label: "GStarCAD" },
 ];
 
 const OUTPUT_FORMATS: { id: OutputFormat; label: string; soon?: boolean }[] = [
@@ -125,7 +125,7 @@ export default function App() {
       const res = await fetch(`${base}/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ functionName: functionName.trim(), prompt: prompt.trim() }),
+        body: JSON.stringify({ functionName: functionName.trim(), prompt: prompt.trim(), platform: selectedPlatform }),
       });
 
       if (!res.ok) {

@@ -38,22 +38,22 @@ const OUTPUT_FORMATS: { id: OutputFormat; label: string; soon?: boolean }[] = [
 
 const EXAMPLES: { label: string; name: string; prompt: string }[] = [
   {
-    label: "Eksport do Excela",
-    name: "CADLL_EXCELKOLORY",
+    label: "Zestawienie zbrojenia w Excelu",
+    name: "CADLL_ZESTZBROJENIA",
     prompt:
-      "Policz sumaryczne długości wszystkich linii i polilinii na rysunku, pogrupuj wyniki według koloru obiektu. Zapisz tabelę wyników do pliku Excel na pulpicie użytkownika (jedna kolumna: kolor, druga: suma długości w metrach, dwie cyfry po przecinku). Na końcu wyświetl komunikat ile obiektów zostało przetworzonych.",
+      'Poproś użytkownika o zaznaczenie obszaru rysunku do analizy. Znajdź wszystkie obiekty mogące zawierać tekst i wyodrębnij te pasujące do wzorca "(numer) ilość#średnica" np. "(1) 12#8". Utwórz plik Excel z zestawieniem: jeśli ten sam numer pręta pojawia się wielokrotnie, zsumuj ilości i umieść w jednej pozycji. Posortuj wyniki rosnąco po numerze pręta. Sprawdź spójność danych: jeśli pod tym samym numerem pręta występują różne średnice, dodaj na końcu arkusza komunikat o błędzie z listą niezgodności. Jeśli dane są spójne, dodaj komunikat potwierdzający poprawność zestawienia.',
   },
   {
-    label: "Zlicz wstawienia bloków",
-    name: "CADLL_LICZNABLOKI",
+    label: "Długości linii po kolorach i warstwach",
+    name: "CADLL_DLUGOSCI",
     prompt:
-      "Przejdź przez wszystkie obiekty na rysunku i znajdź wstawienia bloków (Insert). Pogrupuj je według nazwy bloku i policz ile razy każdy blok został wstawiony. Wyświetl wyniki w oknie komunikatu - każda linia: nazwa bloku i liczba wstawień, posortowane malejąco po liczbie.",
+      "Poproś użytkownika o zaznaczenie obszaru do analizy i wyodrębnij wszystkie linie i polilinie. Pogrupuj je oddzielnie: po kolorach i po warstwach. Wyświetl w edytorze dwie tabele wynikowe - pierwsza grupuje po kolorach, druga po warstwach - każda zawiera sumaryczną długość w metrach z dokładnością do 2 miejsc po przecinku.",
   },
   {
-    label: "Zaznacz obiekty warstwy",
-    name: "CADLL_ZAZNACZWARSTWE",
+    label: "Statystyki typów obiektów",
+    name: "CADLL_STATOBIEKTY",
     prompt:
-      "Zapytaj użytkownika o nazwę warstwy (PromptStringOptions). Następnie przejdź przez wszystkie obiekty w przestrzeni modelu i dodaj do zestawu selekcji te, które należą do podanej warstwy. Na końcu ustaw ten zestaw jako aktywną selekcję w edytorze i wyświetl komunikat ile obiektów zostało zaznaczonych.",
+      "Poproś użytkownika o zaznaczenie obszaru do analizy i wyodrębnij wszystkie obiekty. Pogrupuj je według typu (np. Line, Polyline, Text, MText, Circle, Arc itp.) i policz wystąpienia każdego typu. Wyświetl wyniki w edytorze w postaci tabeli posortowanej malejąco według liczby wystąpień - każda pozycja zawiera nazwę typu i liczbę obiektów.",
   },
 ];
 
@@ -186,7 +186,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans relative overflow-x-hidden">
-      {/* Siatka CAD — fixed, nie rusza się przy scrollowaniu */}
+      {/* Siatka CAD - fixed, nie rusza się przy scrollowaniu */}
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
         <div
           className="w-full h-full"
@@ -497,7 +497,8 @@ export default function App() {
           <p className="font-mono text-xs text-cad-muted text-center max-w-lg leading-relaxed">
             Aplikacja może działać niestabilnie. Nie przechowujemy Twoich danych osobowych - zbieramy wyłącznie
             anonimowe statystyki użycia (liczba generowań, platforma, czas odpowiedzi) w celu poprawy jakości
-            usługi. Rozwiązania były testowane na wersjach oprogramowania 2024+. Korzystając z aplikacji, akceptujesz powyższe warunki.
+            usługi. Rozwiązania były testowane na wersjach oprogramowania 2024+. Korzystając z aplikacji,
+            akceptujesz powyższe warunki.
           </p>
           <span className="text-cad-muted font-mono text-xs opacity-30">v1.12</span>
         </div>

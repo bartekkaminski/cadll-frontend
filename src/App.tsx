@@ -205,10 +205,7 @@ export default function App() {
       <div className="relative flex flex-col min-h-screen" style={{ zIndex: 1 }}>
         {/* ── Hero ── */}
         <section className="pt-6 md:pt-16 pb-14 px-3 flex flex-col items-center text-center select-none">
-          <div
-            className="flex items-center gap-3 mb-10"
-            style={{ fontSize: "clamp(1.5rem, 5vw, 2.5rem)" }}
-          >
+          <div className="flex items-center gap-3 mb-10" style={{ fontSize: "clamp(1.5rem, 5vw, 2.5rem)" }}>
             <div className="bg-cad-accent" style={{ width: "0.35em", height: "1cap" }} />
             <span
               className="font-mono font-bold tracking-widest uppercase"
@@ -218,99 +215,93 @@ export default function App() {
               <span className="text-cad-text">LL</span>
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-mono font-bold tracking-wider uppercase mb-6 max-w-md">
+          <h1 className="text-4xl md:text-5xl font-mono font-bold tracking-wider uppercase mb-6 max-w-md md:max-w-3xl">
             <span className="block text-cad-text">Opisz potrzebę.</span>
             <span className="block text-cad-accent">My wygenerujemy wtyczkę.</span>
           </h1>
           <h2 className="text-cad-label font-mono text-base md:text-lg max-w-xs leading-relaxed font-normal">
-            Twoja komenda CAD jako{" "}
-            <span className="bg-cad-text text-cad-base font-bold px-1">.dll</span> lub{" "}
-            <span className="bg-cad-text text-cad-base font-bold px-1">.lsp</span>{" "}
-            w kilka sekund.
+            Twoja komenda CAD jako <span className="bg-cad-text text-cad-base font-bold px-1">.dll</span> lub{" "}
+            <span className="bg-cad-text text-cad-base font-bold px-1">.lsp</span> w kilka sekund.
           </h2>
-
         </section>
 
         {/* ── Selectors ── */}
         <section className="flex flex-col items-center gap-8 px-3 mb-14 select-none">
           {/* Platform */}
-          <div className="w-full max-w-2xl flex flex-col gap-2">
+          <div className="w-full max-w-3xl flex flex-col gap-2">
             <p className="font-mono text-xs text-cad-muted uppercase tracking-widest">Wybierz program CAD</p>
-          <div className="grid grid-cols-1 min-[300px]:grid-cols-2 min-[480px]:grid-cols-4 gap-2">
-            {PLATFORMS.map((p) => (
-              <button
-                key={p.id}
-                disabled={p.soon || busy}
-                onClick={() => !p.soon && setPlatform(p.id)}
-                className={[
-                  "py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center border",
-                  p.soon
-                    ? "border-cad-border text-cad-label cursor-not-allowed opacity-60 bg-cad-surface"
-                    : platform === p.id
-                      ? "border-cad-accent bg-cad-accent text-white"
-                      : "border-cad-border bg-cad-surface text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
-                ].join(" ")}
-              >
-                <span>{p.label}</span>
-              </button>
-            ))}
-          </div>
+            <div className="grid grid-cols-1 min-[300px]:grid-cols-2 min-[480px]:grid-cols-4 gap-2">
+              {PLATFORMS.map((p) => (
+                <button
+                  key={p.id}
+                  disabled={p.soon || busy}
+                  onClick={() => !p.soon && setPlatform(p.id)}
+                  className={[
+                    "py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center border",
+                    p.soon
+                      ? "border-cad-border text-cad-label cursor-not-allowed opacity-60 bg-cad-surface"
+                      : platform === p.id
+                        ? "border-cad-accent bg-cad-accent text-white"
+                        : "border-cad-border bg-cad-surface text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
+                  ].join(" ")}
+                >
+                  <span>{p.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Output format */}
-          <div className="w-full max-w-2xl flex flex-col gap-2">
+          <div className="w-full max-w-3xl flex flex-col gap-2">
             <p className="font-mono text-xs text-cad-muted uppercase tracking-widest">Format wyjścia</p>
-          <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-2">
-            {OUTPUT_FORMATS.map((f) => (
-              <button
-                key={f.id}
-                disabled={f.soon || busy}
-                onClick={() => !f.soon && setOutputFormat(f.id)}
-                className={[
-                  "py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center border",
-                  f.soon
-                    ? "border-cad-border text-cad-label cursor-not-allowed opacity-60 bg-cad-surface"
-                    : outputFormat === f.id
-                      ? "border-cad-accent bg-cad-accent text-white"
-                      : "border-cad-border bg-cad-surface text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
-                ].join(" ")}
-              >
-                <span>{f.label}</span>
-              </button>
-            ))}
-          </div>
+            <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-2">
+              {OUTPUT_FORMATS.map((f) => (
+                <button
+                  key={f.id}
+                  disabled={f.soon || busy}
+                  onClick={() => !f.soon && setOutputFormat(f.id)}
+                  className={[
+                    "py-2 px-2 font-mono text-xs uppercase tracking-widest transition-colors duration-150 text-center border",
+                    f.soon
+                      ? "border-cad-border text-cad-label cursor-not-allowed opacity-60 bg-cad-surface"
+                      : outputFormat === f.id
+                        ? "border-cad-accent bg-cad-accent text-white"
+                        : "border-cad-border bg-cad-surface text-cad-label hover:text-cad-text hover:bg-cad-panel cursor-pointer",
+                  ].join(" ")}
+                >
+                  <span>{f.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* ── Form ── */}
         <main className="flex-1 flex justify-center px-3 pb-4">
-          <div className="w-full max-w-2xl flex flex-col gap-10">
+          <div className="w-full max-w-3xl flex flex-col gap-10">
             {/* Function name */}
             <div className="flex flex-col gap-2">
-              <label
-                htmlFor="functionName"
-                className="font-mono text-xs text-cad-muted uppercase tracking-widest"
-              >
+              <label htmlFor="functionName" className="font-mono text-xs text-cad-muted uppercase tracking-widest">
                 Nazwa komendy
               </label>
-            <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
-              <input
-                id="functionName"
-                type="text"
-                value={functionName}
-                onChange={(e) => {
-                  const val = e.target.value
-                    .replace(/[^A-Za-z0-9_]/g, "")
-                    .toUpperCase()
-                    .slice(0, 30);
-                  setFunctionName(val);
-                  setError(null);
-                  setSuccess(null);
-                }}
-                placeholder="np. LiczKolory"
-                disabled={busy}
-                spellCheck={false}
-                className="
+              <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
+                <input
+                  id="functionName"
+                  type="text"
+                  value={functionName}
+                  onChange={(e) => {
+                    const val = e.target.value
+                      .replace(/[^A-Za-z0-9_]/g, "")
+                      .toUpperCase()
+                      .slice(0, 30);
+                    setFunctionName(val);
+                    setError(null);
+                    setSuccess(null);
+                  }}
+                  placeholder="np. LiczKolory"
+                  disabled={busy}
+                  spellCheck={false}
+                  className="
                 w-full px-4 py-3
                 bg-transparent
                 text-cad-text font-mono text-base
@@ -318,43 +309,40 @@ export default function App() {
                 focus:outline-none
                 disabled:opacity-40
               "
-              />
-              {functionName.length >= 30 && (
-                <div className="flex justify-end px-4 pb-2">
-                  <span className="font-mono text-xs text-cad-err">Maksymalna długość: 30 znaków</span>
-                </div>
-              )}
-            </div>
+                />
+                {functionName.length >= 30 && (
+                  <div className="flex justify-end px-4 pb-2">
+                    <span className="font-mono text-xs text-cad-err">Maksymalna długość: 30 znaków</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Prompt */}
             <div className="flex flex-col gap-2">
-              <label
-                htmlFor="prompt"
-                className="font-mono text-xs text-cad-muted uppercase tracking-widest"
-              >
+              <label htmlFor="prompt" className="font-mono text-xs text-cad-muted uppercase tracking-widest">
                 Opis
               </label>
-            <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
-              <textarea
-                id="prompt"
-                value={prompt}
-                onChange={(e) => {
-                  setPrompt(e.target.value.slice(0, 2000));
-                  setError(null);
-                  setSuccess(null);
-                  e.target.style.height = "auto";
-                  e.target.style.height = e.target.scrollHeight + "px";
-                }}
-                placeholder={
-                  "Opisz co ma robić funkcja CAD, np:\nPolicz długości linii i polilinii według koloru i wypisz wyniki..."
-                }
-                rows={5}
-                maxLength={2000}
-                disabled={busy}
-                spellCheck={false}
-                style={{ overflow: "hidden" }}
-                className="
+              <div className="flex flex-col border border-cad-border bg-cad-surface focus-within:border-cad-accent transition-colors duration-200">
+                <textarea
+                  id="prompt"
+                  value={prompt}
+                  onChange={(e) => {
+                    setPrompt(e.target.value.slice(0, 2000));
+                    setError(null);
+                    setSuccess(null);
+                    e.target.style.height = "auto";
+                    e.target.style.height = e.target.scrollHeight + "px";
+                  }}
+                  placeholder={
+                    "Opisz co ma robić funkcja CAD, np:\nPolicz długości linii i polilinii według koloru i wypisz wyniki..."
+                  }
+                  rows={5}
+                  maxLength={2000}
+                  disabled={busy}
+                  spellCheck={false}
+                  style={{ overflow: "hidden" }}
+                  className="
                 w-full px-4 py-3
                 bg-transparent
                 text-cad-text font-mono text-sm leading-relaxed
@@ -363,13 +351,15 @@ export default function App() {
                 disabled:opacity-40
                 resize-none min-h-[120px]
               "
-              />
-              <div className="flex justify-end px-4 pb-2">
-                <span className={`font-mono text-xs ${prompt.length >= 1900 ? "text-cad-err" : "text-cad-muted"}`}>
-                  {prompt.length} / 2000
-                </span>
+                />
+                <div className="flex justify-end px-4 pb-2">
+                  <span
+                    className={`font-mono text-xs ${prompt.length >= 1900 ? "text-cad-err" : "text-cad-muted"}`}
+                  >
+                    {prompt.length} / 2000
+                  </span>
+                </div>
               </div>
-            </div>
             </div>
 
             {/* Generate button */}
@@ -423,7 +413,7 @@ export default function App() {
             {/* Examples */}
             <div className="hidden sm:flex flex-col gap-3 pt-4 border-t border-cad-border">
               <p className="text-cad-muted font-mono text-xs uppercase tracking-widest">Przykłady</p>
-              <div className="flex flex-col gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {EXAMPLES.map((ex) => (
                   <button
                     key={ex.name}
@@ -443,10 +433,8 @@ export default function App() {
                     flex flex-col gap-2
                   "
                   >
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="text-cad-text font-mono text-sm font-bold">{ex.label}</span>
-                      <span className="text-cad-accent font-mono text-xs shrink-0">{ex.name}</span>
-                    </div>
+                    <span className="text-cad-accent font-mono text-xs">{ex.name}</span>
+                    <span className="text-cad-text font-mono text-sm font-bold">{ex.label}</span>
                     <p className="text-cad-label font-mono text-xs leading-relaxed line-clamp-2">{ex.prompt}</p>
                   </button>
                 ))}
@@ -493,7 +481,7 @@ export default function App() {
                 ].map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 border border-cad-border text-cad-muted font-mono text-xs tracking-wide hover:bg-cad-text hover:text-cad-base hover:border-cad-text transition-colors duration-150 cursor-default"
+                    className="px-3 py-1 border border-cad-border text-cad-muted font-mono text-xs tracking-wide hover:bg-cad-panel hover:text-cad-label hover:border-cad-label transition-colors duration-150 cursor-default"
                   >
                     {tag}
                   </span>
@@ -503,9 +491,15 @@ export default function App() {
           </div>
         </main>
 
-        {/* ── Version watermark ── */}
-        <div className="py-4 text-center pointer-events-none select-none">
-          <span className="text-cad-muted font-mono text-xs opacity-20">v1.12</span>
+        {/* ── Footer ── */}
+        <div className="px-3 py-8 flex flex-col items-center gap-3 border-t border-cad-border select-none">
+          <span className="font-mono text-xs text-cad-accent uppercase tracking-widest">Wersja Beta</span>
+          <p className="font-mono text-xs text-cad-muted text-center max-w-lg leading-relaxed">
+            Aplikacja może działać niestabilnie. Nie przechowujemy Twoich danych osobowych - zbieramy wyłącznie
+            anonimowe statystyki użycia (liczba generowań, platforma, czas odpowiedzi) w celu poprawy jakości
+            usługi. Rozwiązania były testowane na wersjach oprogramowania 2024+. Korzystając z aplikacji, akceptujesz powyższe warunki.
+          </p>
+          <span className="text-cad-muted font-mono text-xs opacity-30">v1.12</span>
         </div>
       </div>
       {/* end inner wrapper */}
